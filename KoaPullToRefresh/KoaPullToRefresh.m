@@ -168,10 +168,14 @@ static char UIScrollViewPullToRefreshView;
         UIScrollView *scrollView = (UIScrollView *)self.superview;
         if (scrollView.showsPullToRefresh) {
             if (self.isObserving) {
-                //If enter this branch, it is the moment just before "KoaPullToRefreshView's dealloc", so remove observer here
-                [scrollView removeObserver:self forKeyPath:@"contentOffset"];
-                [scrollView removeObserver:self forKeyPath:@"contentSize"];
-                [scrollView removeObserver:self forKeyPath:@"frame"];
+                @try{
+                    //If enter this branch, it is the moment just before "KoaPullToRefreshView's dealloc", so remove observer here
+                    [scrollView removeObserver:self forKeyPath:@"contentOffset"];
+                    [scrollView removeObserver:self forKeyPath:@"contentSize"];
+                    [scrollView removeObserver:self forKeyPath:@"frame"];
+                }@catch(id anException){
+                    //Some observer wasn't attached...
+                }
                 self.isObserving = NO;
             }
         }
